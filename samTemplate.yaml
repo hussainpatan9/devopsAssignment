@@ -2,8 +2,28 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: CD Demo Lambda1
 Resources:
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Sub: lambda-role5
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action:
+            - sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service:
+              - lambda.amazonaws.com
+        Version: 2012-10-17
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSLambdaExecute
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+        - arn:aws:iam::aws:policy/AmazonKinesisFullAccess
+      Path: /
   CDDemoLambda:
-    Type: 'AWS::Serverless::Function'
+    Type: AWS::Lambda::Function
     Properties:
       Handler: lambda_function.lambda_handler
       Runtime: python3.6
@@ -11,13 +31,10 @@ Resources:
       Description: 'Lambda function for CD Demo'
       MemorySize: 128
       Timeout: 30
-      Role: 'arn:aws:iam::196382257510:role/CloudFormationServiceRole'
-      Events:
-        getAZsAPI:
-          Type: Api
-          Properties:
-            Path: /getazs
-            Method: get
+      Role:
+        Fn::GetAtt:
+          - LambdaRole
+          - Arn
       Environment:
         Variables:
           REGION: us-east-1
