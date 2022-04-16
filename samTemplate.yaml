@@ -29,13 +29,8 @@ Resources:
       Runtime: python3.6
       Code:
         ZipFile:
-          "import boto3\n
-           import json\n
-           ec2 = boto3.client('ec2')\n
-           print("Hello World23")\n
-          def lambda_handler(event, context):\n
-              response = ec2.describe_availability_zones()\n
-              return {"statusCode": 200, "body": json.dumps(response)}"
+          "def lambda_handler(event, context):\n
+              sample=sample"
       Description: 'Lambda function for CD Demo'
       MemorySize: 128
       Timeout: 30
